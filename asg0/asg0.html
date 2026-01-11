@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>asg0</title>
+  </head>
+
+  <body onload="main()">
+    <canvas id="cnv1" width="400" height="400">
+    </canvas>
+    <script src="lib/cuon-matrix-cse160.js"></script>
+    <script src="asg0.js"></script>
+
+    <br><br>
+
+    <label>v1 x:
+      <input type="number" id="x1" step="0.1" value="">
+    </label>
+    <label>y:
+      <input type="number" id="y1" step="0.1" value="">
+    </label>
+    <br><br>
+    <label>v2 x:
+      <input type="number" id="x2" step="0.1" value="">
+    </label>
+    <label>y:
+      <input type="number" id="y2" step="0.1" value="">
+    </label>
+    <br><br>
+    <button onclick="handleDrawEvent()">Draw</button>
+
+    <br><br>
+
+    <label>Operation:</label>
+    <select id="operators">
+      <option value="add">Add</option>
+      <option value="sub">Subtract</option>
+      <option value="div">Divide</option>
+      <option value="mul">Multiply</option>
+      <option value="magnitude">Magnitude</option>
+      <option value="normalize">Normalize</option>
+      <option value="angle">Angle between</option>
+      <option value="area">Area</option>
+    </select>
+    <label>Scalar:
+      <input type="number" id="op" step="0.1" value="">
+    </label>
+
+    <br><br>
+
+    <button onclick="handleDrawOperationEvent()">Draw</button>
+
+
+  </body>
+</html>
