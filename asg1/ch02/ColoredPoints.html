@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>asg1</title>
+</head>
+
+<body onload="main()">
+  <div style="display: flex; height: 400px;">
+    <canvas id="webgl" width="400" height="400" style="flex: 1;">
+      Please use a browser that supports "canvas"
+    </canvas>
+    <img src="../IMG_2079.png" alt="snowman" width="400" height="400" style="flex: 1; margin-left: 10px;">
+  </div>
+
+  <p id="numdot">XXX</p>
+
+  <button type="button" id="clear">Clear</button>
+  <button type="button" id="drawing">Drawing</button>
+  <p></p>
+  <button type="button" id="pointButton">Point</button>
+  <button type="button" id="triButton">Triangle</button>
+  <button type="button" id="circleButton">Circle</button>
+
+  <p>
+    R <input type="range" min="0" max="100" value="0" class="slider" id="redSlide">
+    G <input type="range" min="0" max="100" value="0" class="slider" id="greenSlide">
+    B <input type="range" min="0" max="100" value="0" class="slider" id="blueSlide">
+  </p>
+  <p>
+    Circle Segments <input type="range" min="5" max="40" value="5" class="slider" id="circleSlide">
+    Size <input type="range" min="5" max="40" value="5" class="slider" id="sizeSlide">
+  </p>
+
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="ColoredPoints.js"></script>
+  <script src="Point.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Circle.js"></script>
+  <script src="Drawing.js"></script>
+
+</body>
+</html>
