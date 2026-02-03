@@ -19,7 +19,6 @@ body{
     width: 1296px;
     border-radius: 50px;
     border: 1px solid black;
-
 }
 
 
@@ -31,7 +30,7 @@ body{
 
 @font-face {
     font-family: 'body';
-    src: url('fonts/jersey10-regular.ttf') format('truetype');
+    src: url('fonts/Jersey10-Regular.ttf') format('truetype');
 }
 
 .intro a {
