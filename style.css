@@ -1,0 +1,23 @@
+body{
+    background-color: #9887e1;
+}
+
+@font-face {
+    font-family: 'chunky';
+    src: url('fonts/Jacquard12-Regular.ttf') format('truetype');
+}
+
+
+.intro > h1, h2 {
+    text-align: center;
+    color: #21223a;
+    font-family: "chunky", sans-serif;
+}
+h1 {
+    font-size: 80px;
+    margin-bottom: -10px;
+}
+
+h2 {
+    font-size: 40px;
+}
