@@ -4,6 +4,7 @@ class Cube {
         this.rgba = [1,1,1,1];
         this.scale = [1,1,1];
         this.translate = [0,0,0];
+        this.texColorWeight = 0.5;
         this.loadCube();
     }
 
@@ -80,34 +81,16 @@ class Cube {
 
         // color
         gl.uniform4f(u_FragColor, ...this.rgba);
-
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.uniform1f(u_TexColorWeight, this.texColorWeight);
+        gl.drawArrays(gl.TRIANGLES, 0, 36);
     }
+}
 
-    // drawCube(transMat){
-    //
-    //     // Front
-    //     drawTriangle3D([0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0]);
-    //     drawTriangle3D( [0.0,0.0,0.0, 0.0,1.0,0.0, 1.0,1.0,0.0]);
-    //
-    //     // Top
-    //     drawTriangle3D([0,1,0, 0,1,1, 1,1,1]);
-    //     drawTriangle3D([0,1,0, 1,1,1, 1,1,0]);
-    //
-    //     // Bottom
-    //     drawTriangle3D( [0.0,0.0,0.0, 0.0,0.0,1.0, 1.0,0.0,0.0 ]);
-    //     drawTriangle3D( [1.0,0.0,1.0, 0.0,0.0,1.0, 1.0,0.0,0.0 ]);
-    //
-    //     // Left
-    //     drawTriangle3D( [0.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0 ]);
-    //     drawTriangle3D( [0.0,1.0,1.0, 0.0,1.0,0.0, 0.0,0.0,1.0 ]);
-    //
-    //     // Right
-    //     drawTriangle3D( [1.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,1.0 ]);
-    //     drawTriangle3D( [1.0,1.0,1.0, 1.0,1.0,0.0, 1.0,0.0,1.0 ]);
-    //
-    //     // Back
-    //     drawTriangle3D( [0.0,0.0,1.0, 1.0,1.0,1.0, 1.0,0.0,1.0 ]);
-    //     drawTriangle3D( [0.0,0.0,1.0, 0.0,1.0,1.0, 1.0,1.0,1.0 ]);
-    // }
+function createCube(translate, scale = [1,1,1], rgba = [1,1,1,1], texColorWeight = 1) {
+    g_cube.translate = translate;
+    g_cube.scale = scale;
+    g_cube.rgba = rgba;
+    g_cube.texColorWeight = texColorWeight;
+
+    g_cube.render();
 }

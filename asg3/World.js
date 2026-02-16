@@ -5,8 +5,10 @@ var VSHADER_SOURCE = `
   attribute vec2 a_UV;
   varying vec2 v_UV;
   uniform mat4 u_ModelMatrix;
+  uniform mat4 u_CameraMatrix;
+  uniform mat4 u_ProjectionMatrix;
   void main() {
-   gl_Position = u_ModelMatrix * a_Position;
+   gl_Position = u_ProjectionMatrix * u_CameraMatrix * u_ModelMatrix * a_Position;
    v_UV = a_UV;
   }`
 
@@ -16,10 +18,12 @@ var FSHADER_SOURCE = `
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
   uniform sampler2D u_Sampler;
+  uniform float u_TexColorWeight;
   void main() {
     gl_FragColor = u_FragColor;
     // gl_FragColor = vec4(v_UV, 0, 1);
-    gl_FragColor = texture2D(u_Sampler, v_UV);
+    float t = u_TexColorWeight;
+    gl_FragColor = t * texture2D(u_Sampler, v_UV) + (1.0-t) * u_FragColor;
   }`
 
 // Global Variables
@@ -27,12 +31,19 @@ let canvas;
 let gl;
 let a_Position;
 let u_ModelMatrix;
+let u_CameraMatrix;
+let u_ProjectionMatrix;
 let u_FragColor;
 let a_UV;
+let u_TexColorWeight;
 let u_Sampler;
 let g_startTime = performance.now()/1000;
 let g_seconds = 0;
 let g_cube;
+let g_camera;
+let g_texture;
+let g_brick;
+let g_toby;
 
 
 //#region WebGL
@@ -68,8 +79,30 @@ function connectVariablesToGLSL(){
     return;
   }
 
+  u_CameraMatrix = gl.getUniformLocation(gl.program, 'u_CameraMatrix');
+  if (!u_CameraMatrix) {
+    console.log('Failed to get the storage location of u_CameraMatrix');
+    return;
+  }
+
+  u_ProjectionMatrix = gl.getUniformLocation(gl.program, 'u_ProjectionMatrix');
+  if (!u_ProjectionMatrix) {
+    console.log('Failed to get the storage location of u_ProjectionMatrix');
+    return;
+  }
+
+  u_TexColorWeight = gl.getUniformLocation(gl.program, 'u_TexColorWeight');
+  if (!u_TexColorWeight) {
+    console.log('Failed to get the storage location of u_TexColorWeight');
+    return;
+  }
+
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
+
+  const projectionMat = new Matrix4();
+  projectionMat.setPerspective(60, canvas.width/canvas.height, 0.1, 100);
+  gl.uniformMatrix4fv(u_ProjectionMatrix, false, projectionMat.elements);
 
   u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
   if (!u_FragColor) {
@@ -102,7 +135,7 @@ function convertCoordinatesEventToGL(ev) {
   return([x, y]);
 }
 
-//#endregion
+//endregion
 
 //#region HTML
 function sendTextToHTML(text, htmlID){
@@ -123,6 +156,7 @@ function main() {
   connectVariablesToGLSL();
   addActionsForHtmlUI();
   initTextures();
+  g_camera = new Camera();
   g_cube = new Cube();
 
   // Specify the color for clearing <canvas>
@@ -142,39 +176,44 @@ function renderAllShapes(){
 
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  g_cube.render();
+  gl.uniformMatrix4fv(u_CameraMatrix, false, g_camera.getViewMat().elements);
+  map();
 
   var duration = performance.now() - startTime;
   sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
 
 }
 
-//#region textures
+//#region Textures
 function initTextures() {
-  var texture = gl.createTexture();   // Create a texture object
-  if (!texture) {
+  g_texture = gl.createTexture();
+
+  if (!g_texture) {
     console.log('Failed to create the texture object');
     return false;
   }
 
-  var image = new Image();  // Create the image object
-  if (!image) {
+  g_brick = new Image();
+  if (!g_brick) {
     console.log('Failed to create the image object');
     return false;
   }
-  // Register the event handler to be called on loading an image
-  image.onload = function(){ loadTexture(texture, image); };
-  // Tell the browser to load an image
-  image.src = '../images/concrete.jpg';
-  return true;
+  g_brick.src = '../images/wall.png';
+
+  g_toby = new Image();
+  if (!g_toby) {
+    console.log('Failed to create the image object');
+    return false;
+  }
+  g_toby.src = '../images/undertaleDog.png';
 }
 
-function loadTexture(texture, image) {
+function loadTexture(image) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
   // Enable texture unit0
   gl.activeTexture(gl.TEXTURE0);
   // Bind the texture object to the target
-  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.bindTexture(gl.TEXTURE_2D, g_texture);
 
   // Set the texture parameters
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
