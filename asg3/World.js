@@ -15,9 +15,11 @@ var FSHADER_SOURCE = `
   precision mediump float;
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
+  uniform sampler2D u_Sampler;
   void main() {
     gl_FragColor = u_FragColor;
-    gl_FragColor = vec4(v_UV, 0, 1);
+    // gl_FragColor = vec4(v_UV, 0, 1);
+    gl_FragColor = texture2D(u_Sampler, v_UV);
   }`
 
 // Global Variables
@@ -27,6 +29,7 @@ let a_Position;
 let u_ModelMatrix;
 let u_FragColor;
 let a_UV;
+let u_Sampler;
 let g_startTime = performance.now()/1000;
 let g_seconds = 0;
 let g_cube;
@@ -79,6 +82,13 @@ function connectVariablesToGLSL(){
     console.log('Failed to get the storage location of a_UV');
     return;
   }
+
+  // Get the storage location of u_Sampler
+  u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
+  if (!u_Sampler) {
+    console.log('Failed to get the storage location of u_Sampler');
+    return false;
+  }
 }
 
 function convertCoordinatesEventToGL(ev) {
@@ -112,6 +122,7 @@ function main() {
   setupWebGL();
   connectVariablesToGLSL();
   addActionsForHtmlUI();
+  initTextures();
   g_cube = new Cube();
 
   // Specify the color for clearing <canvas>
@@ -138,5 +149,40 @@ function renderAllShapes(){
 
 }
 
+//#region textures
+function initTextures() {
+  var texture = gl.createTexture();   // Create a texture object
+  if (!texture) {
+    console.log('Failed to create the texture object');
+    return false;
+  }
 
+  var image = new Image();  // Create the image object
+  if (!image) {
+    console.log('Failed to create the image object');
+    return false;
+  }
+  // Register the event handler to be called on loading an image
+  image.onload = function(){ loadTexture(texture, image); };
+  // Tell the browser to load an image
+  image.src = '../images/concrete.jpg';
+  return true;
+}
+
+function loadTexture(texture, image) {
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
+  // Enable texture unit0
+  gl.activeTexture(gl.TEXTURE0);
+  // Bind the texture object to the target
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  // Set the texture parameters
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  // Set the texture image
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+
+  // Set the texture unit 0 to the sampler
+  gl.uniform1i(u_Sampler, 0);
+}
+//endregion
 

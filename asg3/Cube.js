@@ -10,14 +10,54 @@ class Cube {
     loadCube() {
 
         const vertices = [];
+
+        // front of cube
+        vertices.push(  0,0,0, 0,0, // xyz, uv
+                        1,1,0, 1,1,
+                        1,0,0, 1,0);
         vertices.push(  0,0,0, 0,0,
                         0,1,0, 0,1,
                         1,1,0, 1,1);
-        vertices.push(  0,0,0, 0,0,
-                        1,1,0, 1,1,
-                        1,0,0, 1,0);
 
+        // top of cube
+        vertices.push(  0,1,0, 0,0,
+                        1,1,0, 1,0,
+                        0,1,1, 0,1 );
+        vertices.push(  1,1,0, 1,0,
+                        0,1,1, 0,1,
+                        1,1,1, 1,1 );
 
+        // left side of cube
+        vertices.push(  0,0,0, 1,0,
+                        0,1,0, 1,1,
+                        0,0,1, 0,0 );
+        vertices.push(  0,1,1, 0,1,
+                        0,1,0, 1,1,
+                        0,0,1, 0,0 );
+
+        // right side of cube
+        vertices.push(  1,0,0, 0,0,
+                        1,1,0, 0,1,
+                        1,0,1, 1,0 );
+        vertices.push(  1,1,1, 1,1,
+                        1,1,0, 0,1,
+                        1,0,1, 1,0 );
+
+        // back of cube
+        vertices.push(  0,0,1, 1,0,
+                        1,1,1, 0,1,
+                        1,0,1, 0,0 );
+        vertices.push(  0,0,1, 1,0,
+                        0,1,1, 1,1,
+                        1,1,1, 0,1 );
+
+        //  bottom of cube
+        vertices.push(  0,0,0, 0,1,
+                        0,0,1, 0,0,
+                        1,0,0, 1,1 );
+        vertices.push(  1,0,1, 1,0,
+                        0,0,1,0,0,
+                        1,0,0, 1,1 );
 
         gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
