@@ -114,7 +114,7 @@ function addCameraControls() {
             case 'e':
                 g_camera.panHorizontal(-2);
                 break;
-            case ' ':
+            case 'Shift':
                 g_camera.moveUpDownward(.2);
                 break;
             case 'Control':

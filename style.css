@@ -3,7 +3,6 @@ body{
     background-color: rgba(180, 180, 180, 0.6);
     background-blend-mode: lighten;
     display: flex;
-
     align-items: center;
     flex-direction: column;
     margin: 0;
@@ -11,15 +10,14 @@ body{
 
 .center{
     align-items: center;
-    /*flex-direction: column;*/
     margin: 0;
     background-color: rgba(255, 255, 255, 0.6);
     background-blend-mode: lighten;
-    height: 2296px;
-    width: 1296px;
-    padding: 50px;
-    border-radius: 50px;
-    border: 1px solid black;
+    height: 1000px;
+    width: 500px;
+    padding: 100px;
+    border-radius: 20px;
+    border: 1px solid #21223a;
 }
 
 
@@ -54,50 +52,56 @@ a:hover {
 }
 
 h1 {
-    font-size: 80px;
+    font-size: 40px;
     margin-bottom: -10px;
-    margin-top: 100px;
+    margin-top: -20px;
 }
 
 h2 {
-    font-size: 40px;
+    font-size: 20px;
 }
 
 .assignments {
     display: grid;
     grid-template-columns: repeat(3, 2fr);
     place-items: center;
-    gap: 2rem;
-    margin-top: 100px;
-}
-
-.assignments div:hover {
-    transform: scale(1.1);
-    transition: 1.5s ease;
-}
-
-.zero, .one, .two, .three {
-    transition: 1.5s ease;
-    background-color: #ffcdcd;
-    border-radius: 50px;
-    border: 1px dashed black;
-    height: 400px;
-    width: 400px;
-}
-img {
-    border-radius: 50px;
-    margin: 50px;
+    /*gap: 1rem;*/
+    margin-top: 50px;
     height: 300px;
-    width: 300px;
-    align-content: center;
+    width: 500px;
+}
 
-    /*border: 1px dashed #21223a;*/
+.assignments div {
+    height: 180px;
+    width: 150px;
+    border-radius: 20px;
+    /*border: 3px dotted #67678a;*/
+}
+
+
+.assignments img:hover {
+    transform: scale(1.03);
+    transition: 1.5s ease;
+}
+
+.assignments img {
+    border-radius: 20px;
+    height: 120px;
+    width: 120px;
+    margin-left: 15px;
+    margin-top: 15px;
+    justify-content: center;
+    margin-bottom: -15px;
+    transition: 1.5s ease;
+    border: 3px dotted #67678a;
+
+
 }
 
 p {
     text-align: center;
     color: #21223a;
     font-family: "body", sans-serif;
-    font-size: 25px;
-    margin-top: -40px;
+    font-size: 15px;
+    margin-bottom: -20px;
 }
