@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Asg3!~</title>
+  <title>!TOBY!</title>
 </head>
 
 <a href="https://aminisofia.github.io/CSE160/">
@@ -10,10 +10,10 @@
 </a>
 <br><br>
 
-  <body>
-  <body onload="main()">
+ <body onload="main()">
 
-    <canvas id="webgl" width="400" height="400" style="border: 2px dashed #1d2f64; border-radius: 30px;">
+    <h3 style="margin-left:180px; margin-bottom: 4px;">hi toby!</h3>
+    <canvas id="webgl" width="400" height="400" style="border: 2px solid #000000; border-radius: 30px;">
       Please use a browser that supports "canvas"
     </canvas>
 
@@ -23,10 +23,35 @@
     <script src="../lib/cuon-matrix-cse160.js"></script>
     <script src="World.js"></script>
     <script src="Cube.js"></script>
+    <script src="Toby.js"></script>
     <script src="Camera.js"></script>
     <script src="Map.js"></script>
 
-    <i><p id="fps" style="margin-top: 0px;"></p></i>
+    <i><p id="fps" style="margin-top: 0px; margin-left: 150px"></p></i>
+    <label style="margin-left: 160px">faster toby!</label> <br>
+    <input style="margin-left: 130px" id="speed" type="range" min="0" max="499" step="3" value="0">
+
+    <p style ="margin-bottom: -10px; margin-left: 130px">𑣲 WASD to move</p>
+    <p style ="margin-bottom: -10px; margin-top: 0; margin-left: 130px">𑣲 EQ or Click to pan</p>
+    <p style ="margin-bottom: 10px; margin-top: 0; margin-left: 130px">𑣲 CRTL and Space to fly</p>
+
+  <p style="height: 400px; width: 500px; margin-left: 40px;">⠀⠀⠀⠀⠀⠀⠀⠀
+            ⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⢤⣺⡟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠈⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣄⡀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⣀⣀⠀⠀⢀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡿⠃⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⣼⠋⠻⢿⣤⢿⠏⠀⠉⣟⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⣿⡄⠀⠀⠁⠀⠀⠀⢀⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠸⣧⠀⠀⠀⠀⠀⣄⡾⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⡂⠀⠀⠀⠀⠀⠐⣷⢀⣀⣴⡿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⡤⡄⠀⠀⠀⠀
+    ⣤⣧⡤⠀⠀⠀⠀⠀⠀⠘⠘⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢼⣿⠋⠉⡇⣇⣤⣤⣤⡀
+    ⠀⢲⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢻⡇⠀⠀⣷⡟⠁⠀⢸⡇
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠐⠃⠀⠀⢀⣼⠇
+    ⠀⠀⠀⠀⠀⠀⢠⡶⢢⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⢸⡇⠀⣀⣤⣤⣶⠧⠃⠀
+    ⠀⠀⠀⢠⡖⠲⣿⠁⣸⠇⠀⠀⠀⠀⠀⡠⣧⠆⠀⠀⠀⠀⠈⠛⠳⠕⠛⠁⠀⠀⠀⠀
+    ⠀⠀⠀⠐⠿⡤⢤⣠⡿⠀⠀⠀⠀⠀⠀⠀⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</p>
+
 
   </body>
 </html>

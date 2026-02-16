@@ -21,9 +21,18 @@ var FSHADER_SOURCE = `
   uniform float u_TexColorWeight;
   void main() {
     gl_FragColor = u_FragColor;
-    // gl_FragColor = vec4(v_UV, 0, 1);
     float t = u_TexColorWeight;
-    gl_FragColor = t * texture2D(u_Sampler, v_UV) + (1.0-t) * u_FragColor;
+    vec4 TexColor = texture2D(u_Sampler, v_UV);
+    if (t > 0.0) {
+      if(TexColor.a < 0.1) {
+        discard;
+      }
+      gl_FragColor = t * TexColor + (1.0-t) * u_FragColor;
+    } else {
+      float fakeLight = 1.15 - distance(v_UV, vec2(0.5, 0.5));
+      fakeLight = clamp(fakeLight, 0.0, 1.0);
+      gl_FragColor = vec4(u_FragColor.x * fakeLight, u_FragColor.y * fakeLight, u_FragColor.z * fakeLight, 1.0);
+    }    
   }`
 
 // Global Variables
@@ -44,6 +53,9 @@ let g_camera;
 let g_texture;
 let g_brick;
 let g_toby;
+let g_jump;
+let g_quad;
+let g_speed = 0;
 
 
 //#region WebGL
@@ -56,6 +68,9 @@ function setupWebGL(){
     console.log('Failed to get the rendering context for WebGL');
     return;
   }
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
   gl.enable(gl.DEPTH_TEST);
 }
@@ -148,6 +163,10 @@ function sendTextToHTML(text, htmlID){
 }
 
 function addActionsForHtmlUI(){
+  const faster = document.getElementById('speed');
+  faster.addEventListener('change', () => {
+    g_speed = faster.value;
+  });
 }
 //#endregion
 
@@ -158,6 +177,7 @@ function main() {
   initTextures();
   g_camera = new Camera();
   g_cube = new Cube();
+  g_quad = new Toby();
 
   // Specify the color for clearing <canvas>
   gl.clearColor(.755, .815, .980, 1);
@@ -206,6 +226,13 @@ function initTextures() {
     return false;
   }
   g_toby.src = '../images/undertaleDog.png';
+
+  g_jump = new Image();
+  if (!g_jump) {
+    console.log('Failed to create the image object');
+    return false;
+  }
+  g_jump.src = '../images/jump.png';
 }
 
 function loadTexture(image) {
@@ -216,10 +243,11 @@ function loadTexture(image) {
   gl.bindTexture(gl.TEXTURE_2D, g_texture);
 
   // Set the texture parameters
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   // Set the texture image
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+  gl.generateMipmap(gl.TEXTURE_2D);
   // Set the texture unit 0 to the sampler
   gl.uniform1i(u_Sampler, 0);
 }

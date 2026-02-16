@@ -11,12 +11,13 @@ body{
 
 .center{
     align-items: center;
-    flex-direction: column;
+    /*flex-direction: column;*/
     margin: 0;
     background-color: rgba(255, 255, 255, 0.6);
     background-blend-mode: lighten;
-    height: 1296px;
+    height: 2296px;
     width: 1296px;
+    padding: 50px;
     border-radius: 50px;
     border: 1px solid black;
 }
@@ -64,9 +65,8 @@ h2 {
 
 .assignments {
     display: grid;
-    grid-auto-flow: column;
-    /*grid-template-columns: repeat(2, 2fr);*/
-    justify-content: center;
+    grid-template-columns: repeat(3, 2fr);
+    place-items: center;
     gap: 2rem;
     margin-top: 100px;
 }
@@ -76,17 +76,21 @@ h2 {
     transition: 1.5s ease;
 }
 
-.zero, .one, .two {
+.zero, .one, .two, .three {
     transition: 1.5s ease;
     background-color: #ffcdcd;
     border-radius: 50px;
     border: 1px dashed black;
+    height: 400px;
+    width: 400px;
 }
 img {
     border-radius: 50px;
-    margin: 20px;
+    margin: 50px;
     height: 300px;
     width: 300px;
+    align-content: center;
+
     /*border: 1px dashed #21223a;*/
 }
 
@@ -95,5 +99,5 @@ p {
     color: #21223a;
     font-family: "body", sans-serif;
     font-size: 25px;
-    margin-top: -20px;
+    margin-top: -40px;
 }
