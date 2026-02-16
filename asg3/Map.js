@@ -1,5 +1,6 @@
 function map() {
     createCube([-5,0,-5], [10,0.1,10], [.64, .29, .64, 1], 0);
+    createCube([-10,-10, -10], [40,40,40], [0, 0, 0, 1], 0);
 
     loadTexture(g_brick);
     for (var x = 0; x < 10; x+=2) {
