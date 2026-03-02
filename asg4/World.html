@@ -22,7 +22,7 @@
     <script src="../lib/cuon-utils.js"></script>
     <script src="../lib/cuon-matrix-cse160.js"></script>
     <script src="World.js"></script>
-    <script src="Cube.js"></script>
+    <script src="Shape.js"></script>
     <script src="Toby.js"></script>
     <script src="Camera.js"></script>
     <script src="Map.js"></script>
@@ -30,6 +30,21 @@
     <i><p id="fps" style="margin-top: 0px; margin-left: 150px"></p></i>
     <label style="margin-left: 160px">faster toby!</label> <br>
     <input style="margin-left: 130px" id="speed" type="range" min="0" max="499" step="3" value="0">
+    <br>
+    <button style="margin-left: 140px" id="light-active">light</button>
+    <button id="normals-active">normals</button>
+
+    <br><br>
+    <label style="margin-left: 160px">light position</label> <br>
+    <input style="margin-left: 130px" id="light-position" type="range" min="-1" max="1" step=".05" value="0">
+
+    <br><br>
+    <label style="margin-left: 160px">light color</label> <br>
+    <a style="margin-left: 100px">r</a><input style="width:50px" id="r" type="range" min="0" max="1" step=".05" value="1">
+    <a>g</a><input style="width:50px" id="g" type="range" min="0" max="1" step=".05" value="1">
+    <a>b</a><input style="width:50px" id="b" type="range" min="0" max="1" step=".05" value="1">
+    <br><br>
+    <button style="margin-left:160px" id="party">party</button>
 
     <p style ="margin-bottom: -10px; margin-left: 130px">𑣲 WASD to move</p>
     <p style ="margin-bottom: -10px; margin-top: 0; margin-left: 130px">𑣲 EQ or Click to pan</p>

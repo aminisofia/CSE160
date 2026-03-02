@@ -3,36 +3,69 @@
 var VSHADER_SOURCE = `
   attribute vec4 a_Position;
   attribute vec2 a_UV;
+  attribute vec3 a_Normal;
+  
   varying vec2 v_UV;
+  varying vec3 v_Normal;
+  varying vec4 v_VertPos;
+  
   uniform mat4 u_ModelMatrix;
   uniform mat4 u_CameraMatrix;
   uniform mat4 u_ProjectionMatrix;
   void main() {
    gl_Position = u_ProjectionMatrix * u_CameraMatrix * u_ModelMatrix * a_Position;
    v_UV = a_UV;
+   v_Normal = a_Normal;
+   v_VertPos = u_ModelMatrix * a_Position;
   }`
 
 // Fragment shader program
 var FSHADER_SOURCE = `
   precision mediump float;
   varying vec2 v_UV;
+  varying vec3 v_Normal;
+  varying vec4 v_VertPos;
   uniform vec4 u_FragColor;
   uniform sampler2D u_Sampler;
   uniform float u_TexColorWeight;
+  uniform vec3 u_LightPos;
+  uniform vec3 u_CameraPos;
+  uniform float u_LightActive;
+  uniform float u_NormalsActive;
+  uniform vec3 u_LightCol;
+  
   void main() {
-    gl_FragColor = u_FragColor;
     float t = u_TexColorWeight;
     vec4 TexColor = texture2D(u_Sampler, v_UV);
-    if (t > 0.0) {
-      if(TexColor.a < 0.1) {
-        discard;
-      }
-      gl_FragColor = t * TexColor + (1.0-t) * u_FragColor;
-    } else {
-      float fakeLight = 1.15 - distance(v_UV, vec2(0.5, 0.5));
-      fakeLight = clamp(fakeLight, 0.0, 1.0);
-      gl_FragColor = vec4(u_FragColor.x * fakeLight, u_FragColor.y * fakeLight, u_FragColor.z * fakeLight, 1.0);
-    }    
+    
+    // allow texture with alpha
+    if (t > 0.0 && TexColor.a < 0.1) {
+      discard;
+    }
+    
+    // texture color
+    vec4 col = t * TexColor + (1.0-t) * u_FragColor;
+    //gl_FragColor = col;
+    
+    // light vector
+    vec3 lightVector = u_LightPos - vec3(v_VertPos);
+    float r = length(lightVector);
+    
+    // lighting
+    vec3 L = normalize(lightVector);
+    vec3 N = normalize(v_Normal);
+    float nDotL = max(0.0, dot(N,L));
+    vec3 R = reflect(-L, N);
+    vec3 E = normalize(u_CameraPos - vec3(v_VertPos));
+    vec3 dif = vec3(col) * nDotL;
+    vec3 amb = vec3(col) * 0.3;
+    float spec = pow(max(0.0, dot(E,R)), 20.0);
+    vec4 lightCol = vec4(u_LightCol,1) * vec4(spec + dif + amb, 1);
+    
+    gl_FragColor = (u_LightActive * lightCol) + (1.0 - u_LightActive) * col;
+    
+    if (u_NormalsActive > 0.0) gl_FragColor = vec4(0.5 - v_Normal, 1.0);
+    //gl_FragColor = vec4(0.5 - v_Normal, 1.0);
   }`
 
 // Global Variables
@@ -44,19 +77,29 @@ let u_CameraMatrix;
 let u_ProjectionMatrix;
 let u_FragColor;
 let a_UV;
+let a_Normal;
 let u_TexColorWeight;
 let u_Sampler;
+let u_LightPos;
+let u_CameraPos;
+let u_LightActive;
+let u_NormalsActive;
+let u_LightCol;
 let g_startTime = performance.now()/1000;
 let g_seconds = 0;
-let g_cube;
 let g_camera;
 let g_texture;
 let g_brick;
 let g_toby;
 let g_jump;
-let g_quad;
+let g_shape;
 let g_speed = 0;
-
+let g_lightActive = true;
+let g_normalsActive = false;
+let g_lightPosition;
+let g_lightPositionSet = false;
+let g_lightCol = [1,1,1];
+let g_party = false;
 
 //#region WebGL
 function setupWebGL(){
@@ -131,10 +174,46 @@ function connectVariablesToGLSL(){
     return;
   }
 
+  a_Normal = gl.getAttribLocation(gl.program, 'a_Normal');
+  if (!a_Normal) {
+    console.log('Failed to get the storage location of a_Normal');
+    return;
+  }
+
   // Get the storage location of u_Sampler
   u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
   if (!u_Sampler) {
     console.log('Failed to get the storage location of u_Sampler');
+    return false;
+  }
+
+  u_LightPos = gl.getUniformLocation(gl.program, 'u_LightPos');
+  if (!u_LightPos) {
+    console.log('Failed to get the storage location of u_LightPos');
+    return false;
+  }
+
+  u_CameraPos = gl.getUniformLocation(gl.program, 'u_CameraPos');
+  if (!u_CameraPos) {
+    console.log('Failed to get the storage location of u_CameraPos');
+    return false;
+  }
+
+  u_LightActive = gl.getUniformLocation(gl.program, 'u_LightActive');
+  if (!u_LightActive) {
+    console.log('Failed to get the storage location of u_LightActive');
+    return false;
+  }
+
+  u_NormalsActive = gl.getUniformLocation(gl.program, 'u_NormalsActive');
+  if (!u_NormalsActive) {
+    console.log('Failed to get the storage location of u_NormalsActive');
+    return false;
+  }
+
+  u_LightCol = gl.getUniformLocation(gl.program, 'u_LightCol');
+  if (!u_LightCol) {
+    console.log('Failed to get the storage location of u_LightCol');
     return false;
   }
 }
@@ -167,6 +246,38 @@ function addActionsForHtmlUI(){
   faster.addEventListener('change', () => {
     g_speed = faster.value;
   });
+
+  document.getElementById("light-active").addEventListener("click", () => {
+    g_lightActive = !g_lightActive;
+  });
+
+  document.getElementById("normals-active").addEventListener("click", () => {
+    g_normalsActive = !g_normalsActive;
+    gl.uniform1f(u_NormalsActive, g_normalsActive ? 1.0 : 0.0);
+  });
+
+  const pos = document.getElementById("light-position");
+  pos.addEventListener("input", () => {
+    g_lightPositionSet = true;
+    g_lightPosition = pos.value;
+  });
+
+  //color
+  const r = document.getElementById("r");
+  r.addEventListener("input", () => {
+    g_lightCol[0] = r.value;
+  });
+  const g = document.getElementById("g");
+  g.addEventListener("input", () => {
+    g_lightCol[1] = g.value;
+  });
+  const b = document.getElementById("b");
+  b.addEventListener("input", () => {
+    g_lightCol[2] = b.value;
+  });
+  document.getElementById("party").addEventListener("click", () => {
+    g_party = !g_party;
+  });
 }
 //#endregion
 
@@ -176,8 +287,7 @@ function main() {
   addActionsForHtmlUI();
   initTextures();
   g_camera = new Camera();
-  g_cube = new Cube();
-  g_quad = new Toby();
+  g_shape = new Shape();
 
   // Specify the color for clearing <canvas>
   gl.clearColor(.755, .815, .980, 1);
@@ -197,6 +307,8 @@ function renderAllShapes(){
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.uniformMatrix4fv(u_CameraMatrix, false, g_camera.getViewMat().elements);
+  gl.uniform3f(u_CameraPos, ...g_camera.eye.elements);
+
   map();
 
   var duration = performance.now() - startTime;
