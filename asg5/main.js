@@ -3,6 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // model from: https://skfb.ly/ptZCv
 // skybox from: https://skfb.ly/oKtPY
+// https://threejs.org/manual/#en/backgrounds [Three.js - Background Cubemap] as reference
+
 function main() {
 
     const canvas = document.querySelector('#c');
