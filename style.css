@@ -75,13 +75,12 @@ h2 {
     height: 180px;
     width: 150px;
     border-radius: 20px;
-    /*border: 3px dotted #67678a;*/
 }
 
 
 .assignments img:hover {
     transform: scale(1.03);
-    transition: 1.5s ease;
+    transition: 1s ease;
 }
 
 .assignments img {
@@ -91,8 +90,8 @@ h2 {
     margin-top: 15px;
     justify-content: center;
     margin-bottom: -15px;
-    transition: 1.5s ease;
-    border: 3px dotted #67678a;
+    transition: 1s ease;
+    border: 1px solid #67678a;
 }
 
 p {
