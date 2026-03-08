@@ -7,17 +7,19 @@ body{
     flex-direction: column;
     margin: 0;
 }
-
 .center{
     align-items: center;
     margin: 0;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.34);
     background-blend-mode: lighten;
-    height: 1000px;
-    width: 500px;
+    height: 600px;
+    width: 600px;
     padding: 100px;
-    border-radius: 20px;
+    /*border-radius: 20px;*/
     border: 1px solid #21223a;
+    /*box-shadow:*/
+    /*        inset 60px 0 150px rgba(255, 0, 89, 0.17),*/
+    /*        inset -60px 0 150px rgba(255, 0, 89, 0.17);*/
 }
 
 
@@ -34,7 +36,7 @@ body{
 
 .intro a {
     text-decoration: underline;
-    background-image: linear-gradient(to right, #8d00ff, #c800ff);
+    background-image: linear-gradient(to right, #770035, #86002b);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -42,7 +44,7 @@ body{
 }
 
 a:hover {
-    color: #ff0dc7;
+    color: #0033bb;
 }
 
 .intro > h1, h2 {
@@ -68,13 +70,12 @@ h2 {
     gap: 1.8rem;
     margin-top: 50px;
     height: 300px;
-    width: 500px;
+    width: 600px;
 }
 
 .assignments div {
     height: 180px;
     width: 150px;
-    border-radius: 20px;
 }
 
 
@@ -95,6 +96,7 @@ h2 {
 }
 
 p {
+    box-shadow: 50px 50px 100px 50px rgba(255, 255, 255, 0.38);
     text-align: center;
     color: #21223a;
     font-family: "body", sans-serif;
