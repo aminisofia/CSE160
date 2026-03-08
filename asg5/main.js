@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+// model from: https://skfb.ly/ptZCv
+// skybox from: https://skfb.ly/oKtPY
 function main() {
 
     const canvas = document.querySelector('#c');
@@ -12,6 +14,8 @@ function main() {
     const far = 100;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     camera.position.z = 3;
+    camera.position.y = -1;
+    camera.position.x = 0;
 
     const controls = new OrbitControls(camera, canvas);
     controls.target.set(0, 0, 0);
@@ -75,11 +79,30 @@ function main() {
         });
     }
 
+    // Load koi
+    let chiikawaFriends = null;
+    {
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load(
+            'chiikawa_and_friends.glb',
+            (gltf) => {
+                chiikawaFriends = gltf.scene;
+                chiikawaFriends.position.set(0, -1.5, 1);
+                chiikawaFriends.scale.set(1.5, 1.5, 1.5);
+                scene.add(chiikawaFriends);
+            },
+            undefined,
+            (error) => {
+                console.error('Error loading chiikawa_and_friends.glb:', error);
+            }
+        );
+    }
+
     // Background sky box!
     {
         const loader = new THREE.TextureLoader();
         const texture = loader.load(
-            'https://threejs.org/manual/examples/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg',
+            'jelly.jpg',
             () => {
                 texture.mapping = THREE.EquirectangularReflectionMapping;
                 texture.colorSpace = THREE.SRGBColorSpace;
@@ -87,7 +110,8 @@ function main() {
             }
         );
     }
-//#region Click!
+
+    //#region Click!
 
     // Raycaster + mouse for clicking cubes
     const raycaster = new THREE.Raycaster();
@@ -117,7 +141,7 @@ function main() {
             }
         }
     }
-//#endregion
+    //#endregion
 
     canvas.addEventListener('mousedown', onClick);
 
